@@ -2,224 +2,326 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SGK Fiziki İşlemler & Dilekçe Portalı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SGK Akıllı Dilekçe Oluşturucu</title>
   <style>
     :root {
       --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --accent: #38bdf8;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --paper-bg: #ffffff;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
-      color: var(--text-main);
-      padding: 16px;
+      color: var(--text);
       line-height: 1.5;
+      padding: 12px;
     }
-    .wrapper {
-      max-width: 650px;
+
+    .app-container {
+      width: 100%;
+      max-width: 600px;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
+
     header {
       text-align: center;
-      padding: 24px 0 16px;
+      padding: 12px 4px 4px;
     }
+
     header h1 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
     }
+
     header p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
     }
-    .nav-tabs {
+
+    /* Segmentli Seçim Butonları (Mobilde Asla Taşmaz) */
+    .segmented-control {
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 12px;
-      margin-bottom: 16px;
+      flex-direction: column;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 10px;
     }
-    .tab-btn {
-      flex: 1;
-      white-space: nowrap;
-      padding: 10px 14px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+
+    .seg-btn {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
       border-radius: 8px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
+      color: #475569;
+      text-align: center;
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .tab-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
+
+    .seg-btn.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-    .card {
+
+    /* Form Kartı */
+    .section-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
-      display: none;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .card.active {
-      display: block;
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .card h2 {
-      font-size: 1.1rem;
+
+    .form-group {
       margin-bottom: 10px;
-      color: #ffffff;
     }
-    .info-box {
-      background: #0b1329;
-      border-left: 3px solid var(--accent);
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input, select {
+      width: 100%;
       padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      color: #cbd5e1;
-      margin-bottom: 14px;
-    }
-    .petition-box {
-      background: #090d16;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px;
-      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #f8fafc;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    /* Resmi Dilekçe Kağıdı Önizleme */
+    .paper-wrapper {
+      background: var(--paper-bg);
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .paper-header {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 700;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 6px;
+    }
+
+    .petition-text {
+      font-family: "Courier New", Courier, monospace;
       font-size: 0.82rem;
       line-height: 1.6;
+      color: #1e293b;
       white-space: pre-wrap;
-      color: #e2e8f0;
-      margin-bottom: 12px;
-      user-select: all;
+      word-break: break-word;
     }
-    .action-btn {
-      width: 100%;
+
+    .highlight-fill {
+      color: var(--primary);
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    /* İşlem Butonları */
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .btn-copy {
       background: var(--primary);
       color: #ffffff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
     }
-    .action-btn:active {
-      background: var(--primary-dark);
+
+    .btn-print {
+      background: #0f172a;
+      color: #ffffff;
     }
+
+    .btn:active {
+      opacity: 0.85;
+    }
+
     footer {
       text-align: center;
-      margin-top: 32px;
-      padding: 16px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
+      padding: 12px 6px 24px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Yazdırma Modu (Sadece Dilekçeyi Basar) */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .paper-wrapper, .paper-wrapper * {
+        visibility: visible;
+      }
+      .paper-wrapper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+      .paper-header, .btn-row {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
+  <div class="app-container">
     <header>
-      <h1>SGK Fiziki Dilekçe Rehberi</h1>
-      <p>Elektronik ortamda yapılamayan durumlar için matbu şablonlar</p>
+      <h1>SGK Resmi Dilekçe Sihirbazı</h1>
+      <p>Alanları doldur, resmi dilekçen canlı olarak hazırlansın</p>
     </header>
 
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="showTab(0)">İşyeri Kapanış</button>
-      <button class="tab-btn" onclick="showTab(1)">Mükerrer Dosya İptali</button>
-      <button class="tab-btn" onclick="showTab(2)">Giriş / Çıkış Düzeltme</button>
+    <!-- Dilekçe Türü Seçimi -->
+    <div class="segmented-control">
+      <button class="seg-btn active" onclick="switchType('kapaniş')">İşyeri Kapanış Talebi</button>
+      <button class="seg-btn" onclick="switchType('mukerrer')">Mükerrer / Hatalı Dosya İptali</button>
+      <button class="seg-btn" onclick="switchType('duzeltme')">Giriş / Çıkış Kodu Düzeltme</button>
     </div>
 
-    <!-- 1. Kapanış Dilekçesi -->
-    <div class="card active">
-      <span class="badge">SGM İnceleme & İşlemsizlik</span>
-      <h2>İşyeri Kapanış / Dosya İşlemsizlik Talebi</h2>
-      <div class="info-box">
-        GİB ve MERSİS entegrasyonu nedeniyle vergi dairesi veya oda evrakı aranmaz. Yalnızca yetkili ıslak imzası yeterlidir, kaşe şartı bulunmaz.
+    <!-- Giriş Formu -->
+    <div class="section-card">
+      <div class="section-title">Gerekli Bilgileri Doldurun</div>
+      
+      <div class="form-group">
+        <label>Sosyal Güvenlik Merkezi (SGM)</label>
+        <input type="text" id="sgmInput" placeholder="Örn: Kadıköy SGM" oninput="renderPetition()">
       </div>
-      <div class="petition-box" id="p1">... SOSYAL GÜVENLİK MERKEZİ MÜDÜRLÜĞÜ'NE
 
-İŞYERİ SİCİL NO : ..........................................
-İŞVEREN UNVANI  : ..........................................
+      <div class="form-group">
+        <label>İşyeri Sicil Numarası (26 Haneli)</label>
+        <input type="text" id="sicilInput" placeholder="2.XXXXXXXX.034..." oninput="renderPetition()">
+      </div>
 
-Müdürlüğünüz nezdinde yukarıda belirtilen sicil numarası ile işlem gören işyerimizde çalışan son sigortalının çıkış işlemi .../.../20... tarihi itibarıyla gerçekleştirilmiş olup, bu tarih itibarıyla işyerimizde fiili çalışan kalmamıştır.
+      <div class="form-group">
+        <label>Şirket / İşveren Unvanı</label>
+        <input type="text" id="unvanInput" placeholder="Örn: ABC Tic. Ltd. Şti." oninput="renderPetition()">
+      </div>
 
-İşyerimiz fiilen gayrifaal duruma geçtiğinden, dosyamızın kanuni süresi içerisinde işlemden kaldırılmasını (kapanışının yapılarak iz durumuna alınmasını) arz ederim.
+      <!-- Kapanışa Özel Alan -->
+      <div id="field-kapanis" class="dynamic-field">
+        <div class="form-group">
+          <label>Son İşçi Çıkış / Kapanış Tarihi</label>
+          <input type="date" id="kapanisTarihiInput" oninput="renderPetition()">
+        </div>
+      </div>
 
-Tarih: .../.../20...
-Yetkili Adı-Soyadı:
-İmza:</div>
-      <button class="action-btn" onclick="copyText('p1', this)">Metni Kopyala</button>
+      <!-- Mükerrere Özel Alan -->
+      <div id="field-mukerrer" class="dynamic-field" style="display:none;">
+        <div class="form-group">
+          <label>Hatalı Tescil Edilen Tarih</label>
+          <input type="date" id="tescilTarihiInput" oninput="renderPetition()">
+        </div>
+      </div>
+
+      <!-- Düzeltmeye Özel Alanlar -->
+      <div id="field-duzeltme" class="dynamic-field" style="display:none;">
+        <div class="form-group">
+          <label>Sigortalı Adı Soyadı & T.C. No</label>
+          <input type="text" id="sigortaliInput" placeholder="Ad Soyad - 11 Haneli TC" oninput="renderPetition()">
+        </div>
+        <div class="form-group">
+          <label>Hatalı Bildirilen Durum</label>
+          <input type="text" id="hataliInput" placeholder="Örn: Kod 03 (İstifa)" oninput="renderPetition()">
+        </div>
+        <div class="form-group">
+          <label>Doğru / Düzeltilecek Durum</label>
+          <input type="text" id="dogruInput" placeholder="Örn: Kod 04 (İşveren Feshi)" oninput="renderPetition()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Yetkili Adı Soyadı</label>
+        <input type="text" id="yetkiliInput" placeholder="İmza Yetkilisi" oninput="renderPetition()">
+      </div>
     </div>
 
-    <!-- 2. Hatalı Dosya İptali -->
-    <div class="card">
-      <span class="badge">Hükümsüz Tescil</span>
-      <h2>Hatalı / Mükerrer Tescil Edilen Dosya İptali</h2>
-      <div class="info-box">
-        Sistem üzerinden sehven açılmış ancak hiçbir dönem sigortalı girişi ve bildirim yapılmamış dosyalar için komisyon kararıyla tescilin iptalinde kullanılır.
+    <!-- Canlı Önizleme Kağıdı -->
+    <div class="paper-wrapper">
+      <div class="paper-header">Dilekçe Canlı Önizleme (A4 Formatı)</div>
+      <div class="petition-text" id="outputArea"></div>
+      
+      <div class="btn-row">
+        <button class="btn btn-copy" id="copyBtn" onclick="copyPetition()">Dilekçeyi Kopyala</button>
+        <button class="btn btn-print" onclick="window.print()">Yazdır / PDF</button>
       </div>
-      <div class="petition-box" id="p2">... SOSYAL GÜVENLİK MERKEZİ MÜDÜRLÜĞÜ'NE
-
-İŞYERİ SİCİL NO : ..........................................
-İŞVEREN UNVANI  : ..........................................
-
-Müdürlüğünüzde .../.../20... tarihinde sistem üzerinden sehven/mükerrer olarak tescil kaydı oluşturulan yukarıda yazılı işyeri dosyamızda, tescil tarihinden bugüne kadar hiçbir sigortalı istihdam edilmemiş, herhangi bir e-bildirge veya prim tahakkuku gerçekleşmemiştir.
-
-Hatalı tescil edilen bahse konu işyeri dosyamızın tescil tarihi itibarıyla iptal edilerek kayıtlardan tamamen kaldırılmasını arz ederim.
-
-Tarih: .../.../20...
-Yetkili Adı-Soyadı:
-İmza:</div>
-      <button class="action-btn" onclick="copyText('p2', this)">Metni Kopyala</button>
-    </div>
-
-    <!-- 3. Giriş / Çıkış Düzeltme -->
-    <div class="card">
-      <span class="badge">10 Günlük Süre Aşımı</span>
-      <h2>Süresi Geçen Sigortalı Bildirim Düzeltme</h2>
-      <div class="info-box">
-        10 günlük yasal elektronik düzeltme süresi aşıldığında kuruma fiziki olarak sunulur. Çıkış kodu düzeltmelerinde işçi-işveren imzalı tutanak eklenmesi tavsiye edilir.
-      </div>
-      <div class="petition-box" id="p3">... SOSYAL GÜVENLİK MERKEZİ MÜDÜRLÜĞÜ'NE
-
-İŞYERİ SİCİL NO : ..........................................
-İŞVEREN UNVANI  : ..........................................
-
-İşyerimizde kayıtlı ... T.C. kimlik numaralı sigortalımız ............................ adına düzenlenen bildirimde yasal süresi sonrasında maddi hata yapıldığı tespit edilmiştir:
-
-HATALI BİLGİ    : ..........................................
-DÜZELTİLECEK    : ..........................................
-DÜZELTME NEDENİ : Sehven yapılan kodlama hatası.
-
-Gerekli incelemenin yapılarak sigortalının bildirim kaydının yukarıdaki doğrultuda güncellenmesini saygılarımla arz ederim.
-
-EK: Taraflarca imzalı mutabakat tutanağı / Fesih bildirimi fotokopisi.
-
-Tarih: .../.../20...
-Yetkili Adı-Soyadı:
-İmza:</div>
-      <button class="action-btn" onclick="copyText('p3', this)">Metni Kopyala</button>
     </div>
 
     <footer>
@@ -228,29 +330,105 @@ Yetkili Adı-Soyadı:
   </div>
 
   <script>
-    function showTab(index) {
-      const cards = document.querySelectorAll('.card');
-      const buttons = document.querySelectorAll('.tab-btn');
-      cards.forEach((card, i) => {
-        card.classList.toggle('active', i === index);
-      });
-      buttons.forEach((btn, i) => {
-        btn.classList.toggle('active', i === index);
+    let currentType = 'kapaniş';
+
+    // Bugünü YYYY-MM-DD formatında al
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('kapanisTarihiInput').value = today;
+    document.getElementById('tescilTarihiInput').value = today;
+
+    function switchType(type) {
+      currentType = type;
+      
+      // Buton aktiflik kontrolü
+      const buttons = document.querySelectorAll('.seg-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Özel alanları göster/gizle
+      document.getElementById('field-kapanis').style.display = type === 'kapaniş' ? 'block' : 'none';
+      document.getElementById('field-mukerrer').style.display = type === 'mukerrer' ? 'block' : 'none';
+      document.getElementById('field-duzeltme').style.display = type === 'duzeltme' ? 'block' : 'none';
+
+      renderPetition();
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '.../.../20...';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return dateStr;
+    }
+
+    function renderPetition() {
+      const sgm = document.getElementById('sgmInput').value.trim() || '........................';
+      const sicil = document.getElementById('sicilInput').value.trim() || '....................................';
+      const unvan = document.getElementById('unvanInput').value.trim() || '....................................';
+      const yetkili = document.getElementById('yetkiliInput').value.trim() || '........................';
+      const bugunFormat = formatDate(today);
+
+      let text = '';
+
+      if (currentType === 'kapaniş') {
+        const kapanisTarihi = formatDate(document.getElementById('kapanisTarihiInput').value);
+        text = `${sgm.toUpperCase()} MÜDÜRLÜĞÜ'NE\n\n` +
+`İŞYERİ SİCİL NO : ${sicil}\n` +
+`İŞVEREN UNVANI  : ${unvan}\n\n` +
+`Müdürlüğünüz nezdinde yukarıda belirtilen sicil numarası ile kayıtlı işyerimizde istihdam edilen son sigortalının çıkış işlemi ${kapanisTarihi} tarihi itibarıyla gerçekleştirilmiş olup, bu tarih itibarıyla fiili çalışan personelimiz bulunmamaktadır.\n\n` +
+`İşyerimiz fiilen gayrifaal duruma geçtiğinden, dosyamızın kanuni süresi içerisinde işlemden kaldırılarak iz durumuna alınması hususunu saygılarımla arz ederim.\n\n` +
+`Tarih : ${bugunFormat}\n` +
+`İmza Yetkilisi : ${yetkili}\n` +
+`İmza :`;
+      } 
+      else if (currentType === 'mukerrer') {
+        const tescilTarihi = formatDate(document.getElementById('tescilTarihiInput').value);
+        text = `${sgm.toUpperCase()} MÜDÜRLÜĞÜ'NE\n\n` +
+`İŞYERİ SİCİL NO : ${sicil}\n` +
+`İŞVEREN UNVANI  : ${unvan}\n\n` +
+`Müdürlüğünüz nezdinde ${tescilTarihi} tarihinde elektronik ortamda sehven/mükerrer olarak tescili açılan yukarıda yazılı işyeri dosyamızda, tescil tarihinden bugüne kadar hiçbir sigortalı istihdam edilmemiş ve herhangi bir prim bildirimi yapılmamıştır.\n\n` +
+`Hatalı tescil edilen bahse konu işyeri dosyamızın tescil tarihi itibarıyla iptal edilerek kayıtlardan terkin edilmesi hususunu arz ederim.\n\n` +
+`Tarih : ${bugunFormat}\n` +
+`İmza Yetkilisi : ${yetkili}\n` +
+`İmza :`;
+      } 
+      else if (currentType === 'duzeltme') {
+        const sigortali = document.getElementById('sigortaliInput').value.trim() || '....................................';
+        const hatali = document.getElementById('hataliInput').value.trim() || '........................';
+        const dogru = document.getElementById('dogruInput').value.trim() || '........................';
+        
+        text = `${sgm.toUpperCase()} MÜDÜRLÜĞÜ'NE\n\n` +
+`İŞYERİ SİCİL NO : ${sicil}\n` +
+`İŞVEREN UNVANI  : ${unvan}\n\n` +
+`İşyerimizde kayıtlı ${sigortali} adına düzenlenen sigortalı bildiriminde sistemsel/maddi bir hata yapıldığı tespit edilmiştir:\n\n` +
+`HATALI BİLGİ    : ${hatali}\n` +
+`DÜZELTİLECEK    : ${dogru}\n` +
+`DÜZELTME GEREKÇESİ: Sehven yapılan kodlama/giriş hatası.\n\n` +
+`Gerekli dosya incelemesi yapılarak bahse konu sigortalının bildirim kaydının yukarıdaki doğrultuda güncellenmesini saygılarımla arz ederim.\n\n` +
+`EK: Mutabakat / Fesih Belgesi\n\n` +
+`Tarih : ${bugunFormat}\n` +
+`İmza Yetkilisi : ${yetkili}\n` +
+`İmza :`;
+      }
+
+      document.getElementById('outputArea').innerText = text;
+    }
+
+    function copyPetition() {
+      const text = document.getElementById('outputArea').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const oldText = btn.innerText;
+        btn.innerText = "✓ Kopyalandı!";
+        btn.style.background = "#16a34a";
+        setTimeout(() => {
+          btn.innerText = oldText;
+          btn.style.background = "";
+        }, 1800);
       });
     }
 
-    function copyText(id, btn) {
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = btn.innerText;
-        btn.innerText = "✓ Dilekçe Kopyalandı!";
-        btn.style.background = "#16a34a";
-        setTimeout(() => {
-          btn.innerText = originalText;
-          btn.style.background = "";
-        }, 2000);
-      });
-    }
+    // İlk açılışta boş şablonu çiz
+    renderPetition();
   </script>
 </body>
 </html>
